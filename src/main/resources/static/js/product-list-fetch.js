@@ -122,11 +122,11 @@ document.addEventListener("DOMContentLoaded", function () {
   // Current page state
   let currentPage = 0;
   const pageSize = 20; // Increased page size
-  
+
   function fetchAndRenderProducts(page = 0) {
     currentPage = page;
     productGrid.innerHTML = '<div class="loading">Loading products...</div>';
-    
+
     // Use the correct API endpoint and increase page size
     fetch(`/api/products?page=${page}&size=${pageSize}&sortBy=id&direction=asc`)
       .then((res) => res.json())
@@ -141,12 +141,12 @@ document.addEventListener("DOMContentLoaded", function () {
           productGrid.innerHTML = '<div class="info">No products found.</div>';
           return;
         }
-        
+
         productGrid.innerHTML = products.map(renderProductCard).join("");
 
         // Initialize Add to Cart buttons after rendering
         initAddToCartButtons();
-        
+
         // Create or update pagination
         updatePagination(json.data.totalPages);
       })
@@ -156,43 +156,47 @@ document.addEventListener("DOMContentLoaded", function () {
           '<div class="error">Could not connect to API.</div>';
       });
   }
-  
+
   // Function to create pagination controls
   function updatePagination(totalPages) {
-    const paginationElement = document.getElementById('pagination');
+    const paginationElement = document.getElementById("pagination");
     if (!paginationElement) return;
-    
-    paginationElement.innerHTML = '';
-    
+
+    paginationElement.innerHTML = "";
+
     if (totalPages <= 1) return;
-    
+
     // Add previous page button
-    const prevBtn = document.createElement('button');
-    prevBtn.classList.add('pagination-btn', 'prev-btn');
-    prevBtn.innerHTML = '&laquo; Previous';
+    const prevBtn = document.createElement("button");
+    prevBtn.classList.add("pagination-btn", "prev-btn");
+    prevBtn.innerHTML = "&laquo; Previous";
     prevBtn.disabled = currentPage === 0;
-    prevBtn.addEventListener('click', () => fetchAndRenderProducts(currentPage - 1));
+    prevBtn.addEventListener("click", () =>
+      fetchAndRenderProducts(currentPage - 1)
+    );
     paginationElement.appendChild(prevBtn);
-    
+
     // Add page number buttons (show 5 pages max)
     const startPage = Math.max(0, Math.min(currentPage - 2, totalPages - 5));
     const endPage = Math.min(totalPages, startPage + 5);
-    
+
     for (let i = startPage; i < endPage; i++) {
-      const pageBtn = document.createElement('button');
-      pageBtn.classList.add('pagination-btn', 'page-btn');
-      if (i === currentPage) pageBtn.classList.add('active');
+      const pageBtn = document.createElement("button");
+      pageBtn.classList.add("pagination-btn", "page-btn");
+      if (i === currentPage) pageBtn.classList.add("active");
       pageBtn.textContent = i + 1;
-      pageBtn.addEventListener('click', () => fetchAndRenderProducts(i));
+      pageBtn.addEventListener("click", () => fetchAndRenderProducts(i));
       paginationElement.appendChild(pageBtn);
     }
-    
+
     // Add next page button
-    const nextBtn = document.createElement('button');
-    nextBtn.classList.add('pagination-btn', 'next-btn');
-    nextBtn.innerHTML = 'Next &raquo;';
+    const nextBtn = document.createElement("button");
+    nextBtn.classList.add("pagination-btn", "next-btn");
+    nextBtn.innerHTML = "Next &raquo;";
     nextBtn.disabled = currentPage >= totalPages - 1;
-    nextBtn.addEventListener('click', () => fetchAndRenderProducts(currentPage + 1));
+    nextBtn.addEventListener("click", () =>
+      fetchAndRenderProducts(currentPage + 1)
+    );
     paginationElement.appendChild(nextBtn);
   }
 
