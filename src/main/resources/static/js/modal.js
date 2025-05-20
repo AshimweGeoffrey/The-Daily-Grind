@@ -4,6 +4,7 @@
  *
  * This script handles all modal functionality including opening, closing,
  * and loading product content within modals.
+ * Now uses centralized configuration from app-config.js
  */
 
 (function () {
@@ -17,6 +18,22 @@
   }
 
   ready(function () {
+    // Get configuration values
+    const config = window.APP_CONFIG
+      ? window.APP_CONFIG.modal
+      : {
+          zIndex: { overlay: 999999, content: 1000000 },
+          styles: {
+            overlayBackground: "rgba(0, 0, 0, 0.5)",
+            contentMargin: "5% auto",
+          },
+          features: {
+            enableAnimation: true,
+            enableKeyboardNavigation: true,
+            closeOnBackgroundClick: true,
+          },
+        };
+
     // Browser compatibility check
     const browserCompatible = checkBrowserCompatibility();
     if (!browserCompatible) {
@@ -37,8 +54,8 @@
           left: 0 !important;
           width: 100% !important;
           height: 100% !important;
-          z-index: 999999 !important;
-          background-color: rgba(0, 0, 0, 0.5) !important;
+          z-index: ${config.zIndex.overlay} !important;
+          background-color: ${config.styles.overlayBackground} !important;
           display: none;
         `;
 
@@ -47,14 +64,8 @@
         if (modalContent) {
           modalContent.style.cssText = `
             position: relative !important;
-            z-index: 1000000 !important;
-            margin: 5% auto !important;
-            width: 85% !important;
-            max-width: 900px !important;
-            background-color: #ffffff !important;
-            border-radius: 10px !important;
-            padding: 25px !important;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3) !important;
+            z-index: ${config.zIndex.content} !important;
+            margin: ${config.styles.contentMargin} !important;
           `;
         }
 
